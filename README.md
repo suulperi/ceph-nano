@@ -16,3 +16,13 @@ Follow next instructions: https://examples.openshift.pub/deploy/scc-anyuid/
 
 #### 4) Add one more environment variable
 > RGW_NAME - value must match with route host name
+
+#### 5) Setup your S3-Client - For example s3cmd configuration should look like this:
+```
+New settings:
+  Access Key: userkey
+  Secret Key: secretkey
+  Default Region: us-east-1
+  S3 Endpoint: your.ceph.nano.host.name
+  DNS-style bucket+hostname:port template for accessing a bucket: your.ceph.nano.host.name
+```
