@@ -1,5 +1,5 @@
 # HOWTO deploy ceph-nano in OpenShift 4.x
-If you need S3 endpoints for Quay, Kafka etc in a small-scale OpenShift lab environment you can easily deploy ceph-nano to satisfy that need. Working example can be found from [here](https://github.com/suulperi/ceph-nano/blob/main/deploy_ceph-nano.yml)
+If you need S3 endpoints for Quay, Kafka etc in a small-scale OpenShift lab environment you can easily deploy ceph-nano to satisfy that need. Working example can be found from [here](https://github.com/suulperi/ceph-nano/blob/main/deploy_ceph-nano.yml).
 
 Just follow the next steps and you are good to go. Instructions are tested with OCP 4.6 and 4.7.
 
