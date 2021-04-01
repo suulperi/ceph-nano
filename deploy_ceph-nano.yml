@@ -131,3 +131,7 @@ spec:
   port:
     targetPort: cn-s3
   wildcardPolicy: None
+  tls:
+    insecureEdgeTerminationPolicy: None
+    termination: edge
+
