@@ -4,7 +4,7 @@ If you need S3 endpoints for Quay, Kafka etc in a small-scale OpenShift lab envi
 Just follow the next steps and you are good to go. Instructions are tested with OCP 4.6 and 4.7.
 Original instructions how to run ceph-nano on Kubernetes can be found from https://github.com/ceph/cn .
 
- `cn kube` generates a broken yaml and it will take while to fix everything (indendations, doubles and so on)
+It's good to be aware `cn kube` generates a broken yaml and it will take while to fix everything (indendations, doubles and so on)
 
 #### 1) Set Anyuid SCC 
 Follow next instructions: https://examples.openshift.pub/deploy/scc-anyuid/ 
