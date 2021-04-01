@@ -5,7 +5,7 @@ Just follow the next steps and you are good to go. Instructions are tested with 
 
 Original instructions how to run ceph-nano on Kubernetes can be found from [the project website](https://github.com/ceph/cn).
 
-It's good to be aware `cn kube` generates a broken yaml and it will take while to fix everything (indendations, doubles and so on)
+> It's good to be aware `cn kube` generates a broken yaml and it will take while to fix everything (indendations, doubles and so on)
 
 #### 1) Set Anyuid SCC 
 Follow next instructions: https://examples.openshift.pub/deploy/scc-anyuid/ 
