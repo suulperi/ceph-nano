@@ -1,0 +1,133 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ceph-rgw-keys
+type: Opaque
+data:
+  rgw_user_user_key: <Base64 encoded key>
+  rgw_user_secret_key: <Base64 encoded key>
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: ceph-nano-s3
+    labels:
+      app: ceph
+      daemon: nano
+spec:
+  ports:
+  - name: cn-s3
+    port: 80
+    protocol: TCP
+    targetPort: 8000
+  type: ClusterIP
+  selector:
+    app: ceph
+    daemon: nano
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: ceph
+    daemon: nano
+  name: ceph-nano
+spec:
+  replicas: 1
+  serviceName: ceph-nano
+  selector:
+    matchLabels:
+      app: ceph
+  template:
+    metadata:
+      name: ceph-nano
+      labels:
+        app: ceph
+        daemon: nano
+    spec:
+      serviceAccount: anyuid #match with your anyuid
+      serviceAccountName: anyuid #match with your anyuid
+      containers:
+      - image: registry.access.redhat.com/rhceph/rhceph-3-rhel7
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        name: cn-s3
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512M
+          requests:
+            cpu: "1"
+            memory: 512M
+        env:
+        - name: NETWORK_AUTO_DETECT
+          value: "4"
+        - name: RGW_FRONTEND_PORT
+          value: "8000"
+          # Keep this for backward compatiblity, the option is gone since https://github.com/ceph/ceph-container/pull/1356
+        - name: RGW_CIVETWEB_PORT
+          value: "8000"
+        - name: SREE_PORT
+          value: "5001"
+        - name: CEPH_DEMO_UID
+          value: "nano"
+        - name: CEPH_DAEMON
+          value: "demo"
+        - name: DEBUG
+          value: "verbose"
+        - name: RGW_NAME
+          value: "your-route-host-name" #match with your route host name
+        - name: CEPH_DEMO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ceph-rgw-keys
+              key: rgw_user_user_key
+        - name: CEPH_DEMO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ceph-rgw-keys
+              key: rgw_user_secret_key
+        volumeMounts:
+          - name: cn-varlibceph
+            mountPath: /var/lib/ceph
+          - name: cn-etcceph
+            mountPath: /etc/ceph
+  volumeClaimTemplates:
+  - metadata:
+      name: cn-varlibceph
+      labels:
+        app: ceph
+        daemon: nano
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: your-storage-class-name
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: cn-etcceph
+      labels:
+        app: ceph
+        daemon: nano
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: your-storage-class-name
+      resources:
+        requests:
+          storage: 10Mi
+---
+apiVersion: v1
+kind: Route
+metadata:
+  name: ceph-nano-s3
+spec:
+  host: "your-route-host-name" #match with your RGW_NAME env variable name
+  to:
+    kind: Service
+    name: ceph-nano-s3
+  port:
+    targetPort: cn-s3
+  wildcardPolicy: None
