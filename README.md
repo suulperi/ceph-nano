@@ -18,8 +18,18 @@ Follow next instructions: https://examples.openshift.pub/deploy/scc-anyuid/
 #### 4) Add one more environment variable
 > RGW_NAME - value must match with route host name
 
-#### 5) Setup your S3-Client - For example s3cmd configuration should look like this:
+#### 5) Login to OpenShift
+
+```oc login```
+
+#### 6) Apply
+
+```oc apply -f deploy_ceph-nano.yml -n your-ns```
+
+#### 7) Setup your S3-Client - For example s3cmd configuration should look like this:
+```s3cmd --configure``` and change following values:
 ```
+
 New settings:
   Access Key: userkey
   Secret Key: secretkey
@@ -27,4 +37,14 @@ New settings:
   S3 Endpoint: your.ceph.nano.host.name
   DNS-style bucket+hostname:port template for accessing a bucket: your.ceph.nano.host.name
   Use HTTPS protocol: True
+```
+
+#### 8) Test it (example using s3cmd)
+
+```
+s3cmd mb s3://foobucket
+date > test.txt
+s3cmd put ./test.txt s3://foobucket
+s3cmd ls s3://foobucket
+s3cmd get s3://foobucket/test.txt froms3.txt
 ```
