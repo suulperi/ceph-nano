@@ -26,4 +26,5 @@ New settings:
   Default Region: us-east-1
   S3 Endpoint: your.ceph.nano.host.name
   DNS-style bucket+hostname:port template for accessing a bucket: your.ceph.nano.host.name
+  Use HTTPS protocol: True
 ```
